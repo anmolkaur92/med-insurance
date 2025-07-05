@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import pickle as pkl
+import pickle
 import streamlit as st
 
 # Try to import scikit-learn and check version
@@ -13,20 +13,19 @@ except ModuleNotFoundError:
 except ImportError as e:
     st.error(f"❌ Import error: {e}")
 
-
-
-
-
-# Load the model with error handling
+# Load and re-save the model to ensure compatibility
 try:
-    model = pkl.load(open('MIPML.pkl', 'rb'))
+    model = pickle.load(open('MIPML.pkl', 'rb'))
+
+    # Re-save the model with the current NumPy and pickle version
+    pickle.dump(model, open('MIPML.pkl', 'wb'))
 
     # Check if the model is a valid predictive model
     if not hasattr(model, 'predict'):
         raise ValueError("The loaded model does not have a 'predict' method. Please check the model.")
 
 except Exception as e:
-    st.error(f"Error loading model: {e}")
+    st.error(f"Error loading or re-saving model: {e}")
     raise
 
 # App Title
@@ -59,30 +58,22 @@ if st.button('Predict'):
     input_data = (age, gender_encoded, bmi, children, smoker_encoded, region_encoded)
     input_data_array = np.asarray(input_data).reshape(1, -1)
 
-    # Check if scaling was used during model training and apply the same transformation
+    # Scaling input data (if required by model)
     try:
-        # Assuming StandardScaler was used during training (you can replace this with your model's actual scaler)
         scaler = StandardScaler()
-
-        # Fit the scaler with a sample dataset or the dataset used during training (if known)
-        # You need to either load the scaler or train it here.
-        # Example: scaler.fit(training_data)  (Use the dataset used to train the model)
-        
-        # Transform input data
+        # NOTE: Ideally, you should load the scaler used during model training
+        # Here, we fit it on the single input for demonstration only
         input_data_scaled = scaler.fit_transform(input_data_array)
     except Exception as e:
         st.error(f"Error in scaling the input data: {e}")
         raise
 
-    # Make prediction with error handling
+    # Make prediction
     try:
         predicted_prem = model.predict(input_data_scaled)
-
-        # Ensure the predicted premium is reasonable (e.g., positive values)
         if predicted_prem[0] < 0:
             st.error("Predicted premium is negative, which is not valid. Please check the model.")
         else:
-            display_string = f'Insurance Premium will be {round(predicted_prem[0], 2)} rupees'
-            st.markdown(display_string)
+            st.success(f'Insurance Premium will be {round(predicted_prem[0], 2)} rupees')
     except Exception as e:
         st.error(f"Error in prediction: {e}")
