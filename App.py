@@ -4,6 +4,7 @@ import pickle as pkl
 import streamlit as st
 from sklearn.preprocessing import StandardScaler
 
+
 # Load the model with error handling
 try:
     model = pkl.load(open('MIPML.pkl', 'rb'))
