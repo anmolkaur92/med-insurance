@@ -8,4 +8,4 @@ print("✅ Re-saving model with NumPy 1.x...")
 with open('MIPML.pkl', 'wb') as f:
     pickle.dump(model, f)
 
-print("🎉 Model re-saved successfully! Now it’s compatible with NumPy 1.x environments like Streamlit Cloud.")
+print("🎉 Model re-saved successfully and replaced old file!")
