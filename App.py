@@ -15,9 +15,10 @@ except ImportError as e:
 
 # Load and re-save the model to ensure compatibility
 try:
+    # Load your old model (saved with NumPy 2.x)
     model = pickle.load(open('MIPML.pkl', 'rb'))
 
-    # Re-save the model with the current NumPy and pickle version
+    # Re-save it with NumPy 1.x
     pickle.dump(model, open('MIPML.pkl', 'wb'))
 
     # Check if the model is a valid predictive model
