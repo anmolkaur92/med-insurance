@@ -2,7 +2,19 @@ import numpy as np
 import pandas as pd
 import pickle as pkl
 import streamlit as st
-from sklearn.preprocessing import StandardScaler
+
+# Try to import scikit-learn and check version
+try:
+    import sklearn
+    from sklearn.preprocessing import StandardScaler
+    st.write("✅ scikit-learn version:", sklearn.__version__)
+except ModuleNotFoundError:
+    st.error("❌ scikit-learn is not installed in this environment.")
+except ImportError as e:
+    st.error(f"❌ Import error: {e}")
+
+
+
 
 
 # Load the model with error handling
